@@ -20,7 +20,7 @@
 | `prompts/` | LLM 시스템 프롬프트. 실행할 때마다 읽는다 | 아래 "프롬프트를 고칠 때" |
 | `server.py` | 웹 서버(FastAPI). API와 정적 파일 | `tests/test_server.py` |
 | `web/index.html`, `web/css/app.css`, `web/js/app.js` | 화면. 빌드 단계 없음 | 아래 "화면을 고칠 때" |
-| `web/design-tokens/` | 디자인 토큰 사본. 직접 고치지 않는다 | 아래 "디자인 토큰 사본" |
+| `web/design-tokens/` | 화면이 쓰는 디자인 토큰과 기본 부품 | 아래 "디자인 토큰" |
 | `deploy/` | 웹 서버의 Dockerfile과 Compose 파일 | 아래 "배포 파일을 고칠 때" |
 | `tests/test_offline.py`, `tests/test_server.py` | LLM 없이 도는 테스트 | |
 | `examples/*.prompt.txt` | 모드별 출력 예 (T2V, I2V, Ref2VA, Ref2VA + 첫 프레임) | 출력 형식이 바뀌면 새로 뽑아 바꾼다 |
@@ -92,13 +92,21 @@ uv run tests/test_server.py
 - **컴포넌트에 바깥 여백(margin)을 주지 않는다.** 간격은 부모의 `gap`으로 정한다.
 - 고친 뒤: 다크·라이트 테마, 좁은 화면(375px), 그리고 실제 서버에 붙여 세 모드를 한 번씩 본다.
 
-### 디자인 토큰 사본 (`web/design-tokens/`)
+### 디자인 토큰 (`web/design-tokens/`)
 
-별도 저장소의 디자인 토큰을 복사해 둔 것이다(`tokens.css`는 3층을 합친 번들, `base.css`·`ui.css`·`theme.js`는 원본 그대로). 출처 커밋은 그 폴더의 `SOURCE.md`에 있다.
+이 화면이 쓰는 3층 디자인 토큰과 기본 부품이다.
 
-- **직접 고치지 않는다.** 토큰을 바꾸려면 원본을 고치고 다시 복사한다. 원본 없이 이 저장소만 쓸 때는 필요한 값을 `app.css`의 `:root` 블록에서 덮어쓴다.
-- 갱신하면 색과 컨트롤 높이가 달라질 수 있다. 갱신 전후 화면을 비교하고 `SOURCE.md`의 커밋을 고친다.
-- 원본 저장소에는 날 값·오타 토큰을 잡는 검사 스크립트(`check.mjs`)가 있다. 원본이 있으면 `app.css`·`index.html`을 고친 뒤 돌린다(실패 0).
+| 파일 | 무엇 |
+|---|---|
+| `tokens.css` | 토큰 전부. 1층(원시값: 색·간격·글자 스케일) → 2층(역할: `--color-bg-surface`, `--gap-md`, `--font-body`) → 3층(컴포넌트: `--button-padding-y`, `--control-height`) 순서로 들어 있다 |
+| `base.css` | `body`·링크·포커스 기본값 |
+| `ui.css` | 3층 토큰을 쓰는 클래스: `.btn`, `.field`, `.input`, `.panel`, `.chip`, `.badge`, `.progress`, `.code-block` |
+| `theme.js` | 테마를 기억하고 첫 화면 전에 적용한다. `<head>`에서 CSS보다 먼저 일반 스크립트로 부른다 |
+
+- 화면 하나만의 결정은 이 폴더가 아니라 `app.css`의 `:root` 블록에 둔다. 토큰 값을 바꿔야 하면 같은 블록에서 덮어쓰는 쪽이 먼저다. 이 폴더의 값을 고치면 버튼·입력창 등 전체가 같이 바뀐다.
+- 날 값(`#hex`, `rgb()`, `ms`)은 `tokens.css`의 1층에만 둔다. 2·3층과 `ui.css`, `app.css`는 이름만 참조한다.
+- 테마는 `data-theme="light|dark"`, 밀도는 `data-density="compact|comfortable"` 속성으로 바꾼다. 색은 `light-dark()` 한 줄에 두 테마가 같이 정의되어 있다.
+- 토큰을 고치면 다크·라이트 두 테마에서 화면을 다시 본다. 글자는 배경과 4.5:1, 컨트롤 테두리와 포커스 표시는 3:1 이상이어야 한다.
 
 ### 배포 파일을 고칠 때 (`deploy/`)
 
