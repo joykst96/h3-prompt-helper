@@ -1,0 +1,23 @@
+subject_definitions:
+<Subject 1> is the girl with short silver hair in <Picture 1>, with short silver hair with a small gold star clip, blue eyes, a white t-shirt, a red zip-up jacket with a yellow star on the chest, a black pleated skirt, black over-the-knee socks, and white and red sneakers.
+<Subject 2> is the environment in <Picture 2>, a shrine entrance at sunset, featuring a large red torii gate, stone lanterns lining a staircase, stone stairs leading up to the gate, vibrant red maple trees, a sunset sky with orange and yellow clouds, and distant mountains.
+<Subject 3> is the small round gold robot in <Picture 3>, with a spherical gold body, glowing blue circular eyes, a small antenna with a ball tip, two small gold feet, and black circular vents on the sides.
+
+summary:
+[reference generation] <Subject 1> runs up the stone stairs of <Subject 2> with <Subject 3> hovering closely behind her. Upon reaching the top, she stops and turns to playfully gesture at the robot.
+
+retention_analysis:
+<Subject 1> (appears in [Shot 1], [Shot 2]): fully_preserved - the girl with short silver hair keeps short silver hair with a small gold star clip, blue eyes, a white t-shirt, a red zip-up jacket with a yellow star on the chest, a black pleated skirt, black over-the-knee socks, and white and red sneakers.
+<Subject 2> (appears in [Shot 1], [Shot 2]): fully_preserved - the shrine entrance at sunset keeps a large red torii gate, stone lanterns lining a staircase, stone stairs leading up to the gate, vibrant red maple trees, a sunset sky with orange and yellow clouds, and distant mountains.
+<Subject 3> (appears in [Shot 1], [Shot 2]): fully_preserved - the small round gold robot keeps a spherical gold body, glowing blue circular eyes, a small antenna with a ball tip, two small gold feet, and black circular vents on the sides.
+
+detailed_description:
+The target video is in a 2D-animated Japanese anime style with clean line art, soft cel shading, and warm orange color palette.
+[Shot 1] A low angle tracking shot follows <Subject 1>, the girl with short silver hair with a small gold star clip, blue eyes, a white t-shirt, a red zip-up jacket with a yellow star on the chest, a black pleated skirt, black over-the-knee socks and white and red sneakers, as she runs up the stone stairs of <Subject 2>, the shrine entrance at sunset. The shot reveals the large red torii gate, stone lanterns lining the staircase, and vibrant red maple trees surrounding the area under a sunset sky with orange and yellow clouds and distant mountains. The camera follows the action in a tracking shot as <Subject 1> climbs the steps, her silver hair and the hem of her red jacket fluttering in the breeze. <Subject 3>, the small round gold robot with a spherical gold body, glowing blue circular eyes, a small antenna with a ball tip, two small gold feet and black circular vents on the sides, floats steadily behind her, maintaining a constant distance.
+[Shot 2] At 00:04.000, the shot cuts to a medium shot of <Subject 1> at the top of the stairs, with <Subject 3> hovering near her shoulder. The warm orange light of the sunset casts long shadows across the stone ground. The camera pushes in with small amplitude at slow speed as <Subject 1>, the girl from Shot 1, reaches the summit, stops, and turns her body to look back at <Subject 3> with a wide smile. She raises her hand and gestures for the robot to hurry, her eyes bright with energy. <Subject 1> (S1) shouts in a bright, youthful female voice, energetic, <d>[Korean] 빨리 와!</d> She finishes her sentence with a joyful laugh, her lips curling into a grin as she waits for the robot.
+
+overall_soundscape:
+Rhythmic sneaker footsteps tap on the stone steps, accompanied by a light wind and the faint mechanical whirring of the small round gold robot. The evening wind rustles through the red maple leaves, mixed with the sound of distant cicadas and a quiet mountain atmosphere.
+
+non_diegetic_music:
+An upbeat acoustic guitar melody plays at a light tempo.

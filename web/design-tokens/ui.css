@@ -1,0 +1,348 @@
+/* ==========================================================================
+   ui.css — 선택 사항. 3층 컴포넌트 토큰을 소비하는 최소 클래스 모음.
+   날 값 없음: 모양을 바꾸려면 여기가 아니라 tokens/3-components.css를 고친다.
+   React/Vue 등에서 자체 컴포넌트를 만들 때는 이 파일 대신 토큰을 직접 써도 된다.
+   ========================================================================== */
+
+/* ---------------- 버튼 ----------------
+   변형(variant)은 지역 변수(--_*)만 바꾸고, 상태(hover/active/disabled) 규칙은 .btn에 한 번만 둔다.
+   → 변형마다 상태 규칙을 반복하지 않아도 되고, 선택자 우선순위 꼬임이 없다. */
+.btn {
+  --_bg: var(--button-primary-bg);
+  --_bg-hover: var(--button-primary-bg-hover);
+  --_bg-press: var(--button-primary-bg-press);
+  --_fg: var(--button-primary-fg);
+  --_border: transparent;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--button-gap);
+  padding: var(--button-padding-y) var(--button-padding-x);
+  border: var(--button-border-width) solid var(--_border);
+  border-radius: var(--button-radius);
+  background: var(--_bg);
+  color: var(--_fg);
+  font: var(--button-font);
+  cursor: pointer;
+  transition:
+    background-color var(--transition-fast),
+    border-color var(--transition-fast),
+    color var(--transition-fast);
+}
+.btn:hover {
+  background: var(--_bg-hover);
+}
+.btn:active {
+  background: var(--_bg-press);
+}
+.btn:disabled,
+.btn[aria-disabled="true"] {
+  --_bg: var(--button-disabled-bg);
+  --_bg-hover: var(--button-disabled-bg);
+  --_bg-press: var(--button-disabled-bg);
+  --_fg: var(--button-disabled-fg);
+  --_border: transparent;
+  cursor: not-allowed;
+}
+.btn-secondary {
+  --_bg: var(--button-secondary-bg);
+  --_bg-hover: var(--button-secondary-bg-hover);
+  --_bg-press: var(--button-secondary-bg-press);
+  --_fg: var(--button-secondary-fg);
+}
+.btn-ghost {
+  --_bg: transparent;
+  --_bg-hover: var(--button-ghost-bg-hover);
+  --_bg-press: var(--button-ghost-bg-press);
+  --_fg: var(--button-ghost-fg);
+  --_border: var(--button-ghost-border);
+}
+.btn-danger {
+  --_bg: var(--button-danger-bg);
+  --_bg-hover: var(--button-danger-bg-hover);
+  --_bg-press: var(--button-danger-bg-press);
+  --_fg: var(--button-danger-fg);
+}
+.btn-sm {
+  padding: var(--button-sm-padding-y) var(--button-sm-padding-x);
+  font: var(--button-sm-font);
+}
+.btn-block {
+  width: 100%;
+}
+
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 var(--icon-button-padding-x);
+  border: var(--border-width-thin) solid var(--icon-button-border);
+  border-radius: var(--icon-button-radius);
+  background: var(--icon-button-bg);
+  color: var(--icon-button-fg);
+  font-size: var(--icon-button-font-size);
+  line-height: var(--line-height-none);
+  cursor: pointer;
+  transition:
+    color var(--transition-fast),
+    border-color var(--transition-fast);
+}
+.icon-btn:hover {
+  color: var(--icon-button-fg-hover);
+  border-color: var(--icon-button-border-hover);
+}
+
+/* ---------------- 테마 전환 버튼 ----------------
+   <button class="btn btn-ghost btn-sm theme-toggle" data-theme-toggle> 해 SVG(.theme-icon-sun) + 달 SVG(.theme-icon-moon) </button>
+   아이콘은 "누르면 될 것": 지금 다크면 해, 라이트면 달. 둘 다 넣어 두고 CSS가 고른다.
+   html의 data-theme(theme.js가 붙임), 없으면 OS 설정을 본다 — JS가 돌기 전에도 맞는 아이콘이 뜬다.
+   하위 트리의 data-theme이 아니라 :root를 보는 이유: 버튼이 바꾸는 것은 페이지 전체 테마다. */
+.theme-toggle svg {
+  display: block;
+  width: var(--theme-toggle-icon-size);
+  height: var(--theme-toggle-icon-size);
+  margin-block: calc(var(--theme-toggle-icon-bleed) * -1); /* 높이를 글자 .btn-sm과 같게 */
+}
+.theme-toggle .theme-icon-moon {
+  display: none;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) .theme-toggle .theme-icon-sun {
+    display: none;
+  }
+  :root:not([data-theme="dark"]) .theme-toggle .theme-icon-moon {
+    display: block;
+  }
+}
+:root[data-theme="light"] .theme-toggle .theme-icon-sun {
+  display: none;
+}
+:root[data-theme="light"] .theme-toggle .theme-icon-moon {
+  display: block;
+}
+
+/* ---------------- 폼 ---------------- */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--label-gap);
+}
+.field + .field {
+  margin-top: var(--field-gap);
+}
+/* 라벨 줄: 글자만 있든 오른쪽에 체크박스·배지·.input-sm이 있든 높이가 같다 */
+.label {
+  display: flex;
+  align-items: center;
+  gap: var(--field-label-gap);
+  min-height: var(--field-label-height);
+  font: var(--label-font);
+  color: var(--label-fg);
+}
+.label > :last-child:not(:first-child) {
+  margin-left: auto; /* 오른쪽 옵션은 끝으로 */
+}
+.input {
+  width: 100%;
+  padding: var(--input-padding-y) var(--input-padding-x);
+  border: var(--border-width-thin) solid var(--input-border);
+  border-radius: var(--input-radius);
+  background: var(--input-bg);
+  color: var(--input-fg);
+  font: var(--input-font);
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+.input::placeholder {
+  color: var(--input-placeholder);
+}
+.input:focus-visible {
+  /* none이 아니라 투명 선으로 둔다. 고대비 모드(forced-colors)는 box-shadow를 지우고 테두리 색을 덮어쓰는데,
+     투명 outline은 시스템 색으로 바뀌어 포커스 표시가 남는다. */
+  outline: var(--focus-ring-width) solid transparent;
+  border-color: var(--input-border-focus);
+  box-shadow: var(--focus-halo);
+}
+.input:disabled {
+  color: var(--color-fg-disabled);
+  cursor: not-allowed;
+}
+textarea.input {
+  min-height: var(--input-textarea-min-height);
+  resize: vertical;
+}
+.input-sm {
+  padding: var(--input-sm-padding-y) var(--input-sm-padding-x);
+  font-size: var(--input-sm-font-size);
+}
+/* 셀렉트 v: 그라디언트 두 개로 "\" "/"를 그려 붙인다 — 이미지 없이 테마 색을 따른다 */
+select.input {
+  --_half: calc(var(--select-chevron-size) / 2);
+  --_line: transparent calc(50% - var(--select-chevron-stroke) / 2),
+    var(--select-chevron-color) calc(50% - var(--select-chevron-stroke) / 2),
+    var(--select-chevron-color) calc(50% + var(--select-chevron-stroke) / 2),
+    transparent calc(50% + var(--select-chevron-stroke) / 2);
+  appearance: none;
+  padding-right: var(--select-padding-right);
+  background-image: linear-gradient(45deg, var(--_line)), linear-gradient(-45deg, var(--_line));
+  background-size: var(--_half) var(--_half);
+  background-position:
+    right calc(var(--input-padding-x) + var(--_half)) center,
+    right var(--input-padding-x) center;
+  background-repeat: no-repeat;
+}
+
+/* ---------------- 패널 ---------------- */
+.panel {
+  padding: var(--panel-padding);
+  border: var(--border-width-thin) solid var(--panel-border);
+  border-radius: var(--panel-radius);
+  background: var(--panel-bg);
+}
+.panel-title {
+  margin: 0 0 var(--panel-title-gap);
+  font: var(--panel-title-font);
+  letter-spacing: var(--letter-spacing-overline);
+  text-transform: uppercase;
+  color: var(--panel-title-fg);
+}
+
+/* ---------------- 칩 ---------------- */
+.chip-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--chip-gap);
+}
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--chip-gap);
+  padding: var(--chip-padding-y) var(--chip-padding-x);
+  border: var(--border-width-thin) solid var(--chip-border);
+  border-radius: var(--chip-radius);
+  background: var(--chip-bg);
+  color: var(--chip-fg);
+  font: var(--chip-font);
+  cursor: pointer;
+  transition:
+    border-color var(--transition-fast),
+    color var(--transition-fast);
+}
+.chip:hover {
+  border-color: var(--chip-border-hover);
+  color: var(--chip-fg-hover);
+}
+.chip[aria-pressed="true"] {
+  border-color: var(--chip-border-selected);
+  background: var(--chip-bg-selected);
+  color: var(--chip-fg-selected);
+}
+
+/* ---------------- 배지 ---------------- */
+.badge {
+  display: inline-block;
+  padding: var(--badge-padding-y) var(--badge-padding-x);
+  border-radius: var(--badge-radius);
+  font: var(--badge-font);
+  background: var(--badge-bg);
+  color: var(--badge-fg);
+}
+.badge-accent { background: var(--color-accent-subtle); color: var(--color-accent); }
+.badge-success { background: var(--color-success-subtle); color: var(--color-success); }
+.badge-warning { background: var(--color-warning-subtle); color: var(--color-warning); }
+.badge-danger { background: var(--color-danger-subtle); color: var(--color-danger); }
+
+/* ---------------- 진행 바 ---------------- */
+.progress {
+  height: var(--progress-height);
+  border-radius: var(--progress-radius);
+  background: var(--progress-track);
+  overflow: hidden;
+}
+.progress > span {
+  display: block;
+  height: 100%;
+  background: var(--progress-fill);
+  transition: var(--progress-transition);
+}
+
+/* ---------------- 팝오버 ---------------- */
+.popover {
+  margin-top: var(--popover-offset);
+  border: var(--border-width-thin) solid var(--popover-border);
+  border-radius: var(--popover-radius);
+  background: var(--popover-bg);
+  box-shadow: var(--popover-shadow);
+  overflow: hidden;
+  z-index: var(--z-dropdown);
+}
+.popover-item {
+  padding: var(--popover-item-padding-y) var(--popover-item-padding-x);
+  border-bottom: var(--border-width-thin) solid var(--popover-item-divider);
+  cursor: pointer;
+}
+.popover-item:last-child {
+  border-bottom: none;
+}
+.popover-item:hover,
+.popover-item[aria-selected="true"] {
+  background: var(--popover-item-bg-active);
+}
+
+/* ---------------- 다이얼로그 (네이티브 <dialog>) ---------------- */
+.dialog {
+  width: min(var(--dialog-width), calc(100vw - 2 * var(--layout-page-padding-x)));
+  padding: var(--dialog-padding);
+  border: var(--border-width-thin) solid var(--dialog-border);
+  border-radius: var(--dialog-radius);
+  background: var(--dialog-bg);
+  color: var(--color-fg);
+  box-shadow: var(--dialog-shadow);
+}
+.dialog::backdrop {
+  background: var(--dialog-backdrop);
+}
+.dialog-title {
+  margin: 0 0 var(--gap-md);
+  font: var(--dialog-title-font);
+}
+
+/* ---------------- 코드/로그 블록 ---------------- */
+.code-block {
+  margin: 0;
+  padding: var(--code-block-padding-y) var(--code-block-padding-x);
+  border: var(--border-width-thin) solid var(--code-block-border);
+  border-radius: var(--code-block-radius);
+  background: var(--code-block-bg);
+  font: var(--code-block-font);
+  white-space: pre-wrap;
+}
+
+/* ---------------- 썸네일 ---------------- */
+.thumb {
+  width: var(--thumb-size);
+  height: var(--thumb-size);
+  padding: 0;
+  border: var(--border-width-thin) solid var(--thumb-border);
+  border-radius: var(--thumb-radius);
+  background: var(--color-bg-sunken);
+  overflow: hidden;
+  cursor: pointer;
+  transition: border-color var(--transition-fast);
+}
+.thumb:hover {
+  border-color: var(--thumb-border-active);
+}
+.thumb[aria-current="true"] {
+  border-color: var(--thumb-border-active);
+  box-shadow: 0 0 0 var(--border-width-thin) var(--thumb-border-active);
+}
+
+/* ---------------- 텍스트 유틸 ---------------- */
+.text-muted { color: var(--color-fg-muted); }
+.text-accent { color: var(--color-accent); }
+.text-success { color: var(--color-success); }
+.text-warning { color: var(--color-warning); }
+.text-danger { color: var(--color-danger); }

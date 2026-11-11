@@ -1,0 +1,27 @@
+# 파이썬
+.venv/
+__pycache__/
+*.pyc
+
+# 실행 중에 생기는 것: 이미지 읽기 캐시(올린 이미지의 경로가 들어 있다), 디버그 출력
+.cache/
+*.debug.json
+
+# 환경별 설정 (예시 파일만 저장소에 둔다)
+.env
+deploy/.env
+
+# AI 코딩 도구의 로컬 설정
+.claude/
+CLAUDE.md
+CLAUDE.local.md
+.mcp.json
+
+# 저장소 범위 밖의 개인 작업물 (이 저장소는 프롬프트만 만든다. 이미지·영상 생성 실험은 여기에 둔다)
+local/
+
+# OS·편집기
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

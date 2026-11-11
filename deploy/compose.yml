@@ -1,0 +1,28 @@
+# h3-prompt 웹 서버. LLM 서버는 여기서 띄우지 않고, 이미 떠 있는 서버의 주소를 받는다.
+# 1. deploy/.env.example을 deploy/.env로 복사하고 H3_BASE_URL(LLM 서버 주소)을 적는다
+# 2. 저장소 루트에서:
+#      docker compose -f deploy/compose.yml up -d --build
+services:
+  app:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+    restart: unless-stopped
+    ports:
+      # 이 PC에서만 연다. 앱에는 로그인이 없다 (바깥에 내는 방법은 deploy/README.md)
+      - "127.0.0.1:${H3_PORT:-8000}:8000"
+    environment:
+      # 컨테이너에서 본 LLM 서버 주소 (OpenAI 호환 /v1). 필수
+      H3_BASE_URL: ${H3_BASE_URL:?deploy/.env에 H3_BASE_URL(LLM 서버 주소, 예 http://host.docker.internal:8080/v1)을 적으세요}
+      H3_MODEL: ${H3_MODEL:-gemma4}
+      H3_API_KEY: ${H3_API_KEY:-}
+      H3_CONCURRENCY: ${H3_CONCURRENCY:-1}
+      H3_MAX_WAITING: ${H3_MAX_WAITING:-8}
+      H3_MAX_UPLOAD_MB: ${H3_MAX_UPLOAD_MB:-10}
+    extra_hosts:
+      # LLM 서버가 이 컨테이너를 돌리는 PC에 있을 때 쓰는 이름. 리눅스 Docker에는 기본으로 없어서 넣어 둔다
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - cache:/data/cache
+volumes:
+  cache:

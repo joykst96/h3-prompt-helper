@@ -1,0 +1,356 @@
+/* ==========================================================================
+   app.css — h3-prompt 화면. 색·간격·글자는 design-tokens의 2층(역할)과 3층(컴포넌트) 토큰만 쓴다.
+   컴포넌트는 design-tokens/ui.css의 클래스(.btn .field .input .panel .chip .badge .progress .code-block)를 그대로 쓰고,
+   여기에는 이 화면의 배치와, ui.css에 없는 부품(드롭존·이미지 목록·알림)만 둔다.
+   ========================================================================== */
+
+/* ---- 앱 3층: 이 화면에서만 쓰는 결정 ---- */
+:root {
+  --dropzone-padding: var(--inset-lg);
+  --dropzone-bg: var(--color-bg-sunken);
+  --dropzone-bg-over: var(--color-accent-subtle);
+  --dropzone-border: var(--color-border-control);
+  --dropzone-border-over: var(--color-accent);
+  --image-item-border: var(--color-border);
+  --look-card-border: var(--color-border);
+  --request-min-height: calc(var(--input-textarea-min-height) * 2);
+  --section-divider: var(--color-border);
+}
+
+/* 클래스에 display가 있어도 hidden 속성이 이기게 한다 (.field는 flex라서 그냥 두면 보인다) */
+[hidden] {
+  display: none !important;
+}
+
+/* ---------------- 배치 ---------------- */
+.app-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--gap-lg);
+  max-width: var(--layout-max-width);
+  margin-inline: auto;
+  padding: var(--layout-page-padding-y) var(--layout-page-padding-x) 0;
+}
+.app-heading {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--gap-2xs);
+  min-width: 0;
+}
+.app-title {
+  margin: 0;
+  font: var(--font-title);
+}
+.app-subtitle {
+  margin: 0;
+  font: var(--font-subtitle);
+  color: var(--color-fg-muted);
+}
+.app-main {
+  display: grid;
+  grid-template-columns: var(--layout-sidebar-width) minmax(0, 1fr);
+  align-items: start;
+  gap: var(--layout-gap);
+  max-width: var(--layout-max-width);
+  margin-inline: auto;
+  padding: var(--layout-gap) var(--layout-page-padding-x) var(--layout-page-padding-y);
+}
+@media (max-width: 900px) {
+  .app-main {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* 간격은 부모가 정한다: 필드 묶음은 --field-gap, 필드 묶음과 동작 버튼 사이는 --action-gap */
+.form-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--action-gap);
+}
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--field-gap);
+}
+.field-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--field-gap);
+}
+/* gap이 간격을 맡으므로 ui.css의 .field + .field 위 여백은 끈다 (격자 안에서는 둘째 칸만 내려앉는다) */
+.stack > .field,
+.field-row > .field {
+  margin-top: 0;
+}
+
+/* ---------------- 글 ---------------- */
+.hint {
+  margin: 0;
+  font: var(--font-label);
+  color: var(--color-fg-muted);
+}
+.request {
+  min-height: var(--request-min-height);
+}
+
+/* ---------------- 드롭존 ---------------- */
+.dropzone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--gap-xs);
+  width: 100%;
+  padding: var(--dropzone-padding);
+  border: var(--border-width-thin) dashed var(--dropzone-border);
+  border-radius: var(--input-radius);
+  background: var(--dropzone-bg);
+  color: var(--color-fg-muted);
+  font: var(--font-label);
+  cursor: pointer;
+  transition:
+    border-color var(--transition-fast),
+    background-color var(--transition-fast);
+}
+.dropzone:hover,
+.dropzone.is-over {
+  border-color: var(--dropzone-border-over);
+}
+.dropzone.is-over {
+  background: var(--dropzone-bg-over);
+}
+.dropzone-title {
+  font: var(--font-body);
+  color: var(--color-fg);
+}
+
+/* ---------------- 이미지 목록 ---------------- */
+.image-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-md);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.image-list:empty {
+  display: none;
+}
+.image-item {
+  display: grid;
+  grid-template-columns: var(--thumb-size) minmax(0, 1fr);
+  align-items: start;
+  gap: var(--gap-lg);
+  padding: var(--inset-sm);
+  border: var(--border-width-thin) solid var(--image-item-border);
+  border-radius: var(--input-radius);
+}
+.image-thumb {
+  display: block;
+  width: var(--thumb-size);
+  height: var(--thumb-size);
+  border: var(--border-width-thin) solid var(--thumb-border);
+  border-radius: var(--thumb-radius);
+  background: var(--color-bg-sunken);
+  object-fit: cover;
+}
+.image-meta {
+  display: flex;
+  flex-direction: column;
+  gap: var(--label-gap);
+  min-width: 0;
+}
+/* 라벨 줄과 같은 높이: 배지·파일 이름·체크박스·빼기 버튼이 한 줄에 선다 */
+.image-head {
+  display: flex;
+  align-items: center;
+  gap: var(--field-label-gap);
+  min-height: var(--field-label-height);
+}
+.image-file {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  font: var(--font-label);
+  color: var(--color-fg-muted);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.image-head .icon-btn {
+  height: var(--field-label-height);
+}
+
+/* ---------------- 체크박스 ---------------- */
+.check {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--gap-sm);
+  font: var(--font-label);
+  color: var(--color-fg);
+  white-space: nowrap;
+  cursor: pointer;
+}
+.check input {
+  margin: 0;
+  accent-color: var(--color-accent-solid);
+}
+.check-list {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--gap-sm);
+}
+.check-list .check {
+  white-space: normal;
+}
+
+/* ---------------- 접는 영역 ---------------- */
+.advanced > summary,
+.note-block > summary {
+  font: var(--font-label);
+  color: var(--color-fg-muted);
+  cursor: pointer;
+}
+.advanced-body {
+  padding-top: var(--label-gap);
+}
+
+/* ---------------- 알림 ---------------- */
+.alert {
+  margin: 0;
+  padding: var(--inset-sm) var(--inset-md);
+  border: var(--border-width-thin) solid var(--color-danger-border);
+  border-radius: var(--input-radius);
+  background: var(--color-danger-subtle);
+  color: var(--color-danger);
+  overflow-wrap: anywhere;
+}
+
+/* ---------------- 결과 ---------------- */
+.empty {
+  color: var(--color-fg-muted);
+}
+.empty ol,
+.plain-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-xs);
+  margin: 0;
+  padding-left: var(--inset-lg);
+}
+.running,
+.done {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-lg);
+}
+.running-stage {
+  margin: 0;
+  font: var(--font-heading);
+}
+.result-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--gap-md);
+}
+.result-meta {
+  display: flex;
+  flex: 1;
+  flex-wrap: wrap;
+  gap: var(--gap-sm);
+}
+.result-actions {
+  display: flex;
+  gap: var(--gap-sm);
+}
+.prompt {
+  color: var(--color-fg);
+  overflow-wrap: anywhere;
+}
+.issues {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-sm);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.issues li {
+  display: flex;
+  align-items: baseline;
+  gap: var(--gap-md);
+  font: var(--font-body-sm);
+}
+.issues .badge {
+  flex: none;
+}
+.note-block {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-sm);
+  padding-top: var(--gap-lg);
+  border-top: var(--border-width-thin) solid var(--section-divider);
+}
+.section-title {
+  margin: 0;
+  font: var(--font-overline);
+  color: var(--color-fg-muted);
+}
+.plain-list {
+  font: var(--font-body-sm);
+}
+.mono {
+  font: var(--font-code);
+}
+.look-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-md);
+  padding-top: var(--gap-sm);
+  font: var(--font-body-sm);
+}
+.look-body p {
+  margin: 0;
+}
+.look-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-2xs);
+}
+/* 고칠 수 있는 이미지 읽기 결과: 이미지마다 카드 하나, 그 안의 피사체는 왼쪽 선으로 묶는다 */
+.look-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-md);
+  padding: var(--inset-md);
+  border: var(--border-width-thin) solid var(--look-card-border);
+  border-radius: var(--input-radius);
+}
+.look-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--field-gap);
+  padding-left: var(--inset-md);
+  border-left: var(--border-width-thin) solid var(--look-card-border);
+}
+.look-group > .field {
+  margin-top: 0;
+}
+.look-group-title {
+  font: var(--font-overline);
+  color: var(--color-fg-muted);
+}
+.look-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--gap-md);
+}
+.look-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--gap-sm);
+}

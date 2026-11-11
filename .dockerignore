@@ -1,0 +1,11 @@
+# 이미지에는 코드·프롬프트·web만 넣는다 (Dockerfile이 필요한 것만 COPY하지만, 빌드 컨텍스트 전송도 줄인다)
+.venv
+.cache
+.claude
+.git
+.env
+**/__pycache__
+tests
+examples
+local
+deploy/.env

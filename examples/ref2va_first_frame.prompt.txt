@@ -1,0 +1,23 @@
+subject_definitions:
+<Subject 1> is the girl shown in <Picture 1>, with the face, hair and clothing exactly as in that picture.
+<Subject 2> is the small round gold robot in <Picture 2>, with a spherical gold body, glowing blue circular eyes, a small antenna with a ball tip, two small gold feet, and black circular vents on the sides.
+<Picture 1> is the first frame of [Shot 1], showing a girl in a school uniform sitting on a bench at a bus stop under a shelter during a rainy night.
+
+summary:
+[keyframe completion + reference generation] The video begins from <Picture 1>. <Subject 1> sits quietly at a bus stop during a rainstorm until <Subject 2> floats into view in front of her. She tilts her head up to face the robot and offers a warm greeting.
+
+retention_analysis:
+<Subject 1> (appears in [Shot 1], [Shot 2]): fully_preserved - the girl keeps the appearance shown in <Picture 1>.
+<Subject 2> (appears in [Shot 1], [Shot 2]): fully_preserved - the small round gold robot keeps a spherical gold body, glowing blue circular eyes, a small antenna with a ball tip, two small gold feet, and black circular vents on the sides.
+<Picture 1> ([Shot 1] first frame): fully_preserved - the video starts exactly from <Picture 1>'s framing, subject positions, and setting.
+
+detailed_description:
+The target video is in a 2D-animated Japanese anime style with clean line art and soft cel shading.
+[Shot 1] The shot begins from <Picture 1>. <Subject 1>, the girl, sits on the bench at the right of the frame, facing left, with a red umbrella leaning against the bench beside her. To the left, a bus stop sign stands on the sidewalk. The scene is a bus stop at night during a heavy rainstorm, where a street lamp on the left casts a soft glow onto the wet ground and reflecting puddles. The camera holds a static shot as <Subject 1> stares ahead into the darkness. <Subject 2>, the small round gold robot with a spherical gold body, glowing blue circular eyes, a small antenna with a ball tip, two small gold feet, and black circular vents on the sides, floats into the frame from the left. The robot drifts steadily toward <Subject 1>, stopping in the air directly in front of her face.
+[Shot 2] At 00:04.000, the shot cuts to a close up on the face of <Subject 1>, the girl, and <Subject 2>, the small round gold robot. The robot hovers in the foreground, its blue eyes glowing softly against the dark, rainy background. The camera tilts up with small amplitude at slow speed as <Subject 1> tilts her head up to look at the hovering <Subject 2>. A slight, gentle smile forms on her lips. <Subject 1> (S1) whispers in a soft, calm, gentle female voice, <d>[Korean] 왔구나.</d> She closes her lips and maintains her warm expression, looking into the robot's blue eyes.
+
+overall_soundscape:
+Heavy rain falls steadily on the bus stop roof, creating a constant rhythmic patter. A soft mechanical hum and low electronic whirring emanate from the robot, while distant thunder rolls faintly in the background.
+
+non_diegetic_music:
+Minimalist ambient synth with a slow and soothing tempo, played at a very low volume.

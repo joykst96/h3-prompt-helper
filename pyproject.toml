@@ -1,0 +1,21 @@
+[project]
+name = "h3-prompt"
+version = "0.1.0"
+description = "한국어 영상 아이디어를 MiniMax H3용 영어 프롬프트로 바꾸는 로컬 LLM 파이프라인 (CLI + 웹)"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.10"
+dependencies = [
+    "fastapi>=0.162.4",
+    "python-multipart>=0.0.32",
+    "uvicorn>=0.54.0",
+]
+
+# 패키지로 설치하지 않는다. h3_prompt.py(코어 + CLI, 표준 라이브러리만)와 server.py(웹)를 그대로 실행한다.
+[tool.uv]
+package = false
+
+[dependency-groups]
+dev = [
+    "httpx2>=2.14.0",
+]

@@ -1,0 +1,7 @@
+For the target video, at 0.00 seconds into the target video, <Picture 1> (from [Shot 1]) is fully referenced.
+
+integrated_multimodal_description: [Shot 1] 2D-animated, Japanese anime style, clean line art, soft cel shading, a medium shot at eye level, seen from the side, the girl shown in <Picture 1> sits on the bench under the bus stop shelter, facing left towards the street with her mouth closed, while the red umbrella leans against the bench beside her and a bus stop sign stands on the sidewalk to the left. A cool blue light from a street lamp on the left illuminates the wet ground and reflecting puddles. The girl stands up from the bench, reaches down to grasp the handle of the red umbrella, and lifts it, pulling the fabric taut as she opens it with a sharp snap. The camera trucks right with small amplitude as she steps out from the shelter's dark shade into the heavy rain, walking toward the left of the frame. Her footsteps make splashing sounds in the puddles as she moves away.
+
+overall_soundscape: Heavy, steady rainfall hitting the shelter roof and the street, the mechanical snap of an umbrella opening, and the rhythmic splashing of footsteps through shallow puddles. A distant, low rumble of thunder rolls through the air.
+
+non_diegetic_music: Slow solo piano with sparse, single notes.
