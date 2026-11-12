@@ -19,6 +19,7 @@ services:
       H3_CONCURRENCY: ${H3_CONCURRENCY:-1}
       H3_MAX_WAITING: ${H3_MAX_WAITING:-8}
       H3_MAX_UPLOAD_MB: ${H3_MAX_UPLOAD_MB:-10}
+      H3_IMAGE_MAX_PIXELS: ${H3_IMAGE_MAX_PIXELS:-1048576}
     extra_hosts:
       # LLM 서버가 이 컨테이너를 돌리는 PC에 있을 때 쓰는 이름. 리눅스 Docker에는 기본으로 없어서 넣어 둔다
       - "host.docker.internal:host-gateway"

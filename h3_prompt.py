@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # /// script
 # requires-python = ">=3.10"
-# dependencies = []
+# dependencies = ["pillow>=12.3.0"]
 # ///
 """한국어 영상 아이디어 -> MiniMax H3 영어 프롬프트 (로컬 LLM 파이프라인).
 
@@ -21,6 +21,7 @@ from __future__ import annotations
 import argparse
 import base64
 import hashlib
+import io
 import json
 import mimetypes
 import os
@@ -30,10 +31,22 @@ import urllib.error
 import urllib.request
 from pathlib import Path
 
+from PIL import Image, ImageOps
+
 HERE = Path(__file__).resolve().parent
 PROMPTS = HERE / "prompts"
 # 이미지 읽기 결과. 파일을 직접 고쳐서 모델이 잘못 본 것을 바로잡을 수 있다. 배포할 때는 H3_CACHE_DIR로 볼륨 경로를 준다
 CACHE = Path(os.environ.get("H3_CACHE_DIR") or HERE / ".cache" / "look")
+# LLM에 보내는 이미지의 화소 수 상한. 넘는 이미지만 비율을 지켜 이 화소 수 이하로 줄여 보낸다. 0이면 제한하지 않는다.
+# 이미지 토큰은 화소 수에 비례한다 (Gemma 4 26B A4B + mmproj 실측: 100만 화소 약 470토큰, 180만 약 800, 250만 이상 약 1,120).
+# 큰 참조 이미지 9장은 컨텍스트 8192를 넘기므로, 읽기 정확도를 확인한 크기(1344x768, 832x1216, 1024x1024)까지만 그대로 보낸다.
+# 이보다 낮추면 토큰은 더 줄지만 읽기가 나빠진다: 60만 화소(1024x585)에서 이미 anime 그림의 화풍을 3D CG로 읽는 일이 생긴다
+# (MAINTENANCE.md 검증 기록).
+DEFAULT_IMAGE_MAX_PIXELS = 1024 * 1024
+try:
+    IMAGE_MAX_PIXELS = max(0, int(os.environ.get("H3_IMAGE_MAX_PIXELS") or DEFAULT_IMAGE_MAX_PIXELS))
+except ValueError:
+    IMAGE_MAX_PIXELS = DEFAULT_IMAGE_MAX_PIXELS
 
 # 화풍 기본값. 이 도구는 주로 anime 영상에 쓴다. 매체 이름은 공식 가이드의 어휘(2D-animated, Live-action ...)를 따른다.
 STYLE_PRESETS = {
@@ -107,6 +120,31 @@ class Issue:
 
 # --------------------------------------------------------------------------- LLM
 
+def image_payload(path: Path, max_pixels: int | None = None) -> tuple[str, bytes]:
+    """LLM에 보낼 이미지의 (MIME, 바이트). 화소 수가 max_pixels(기본 IMAGE_MAX_PIXELS)를 넘으면 비율을 지켜 줄이고 PNG로 다시 만든다.
+
+    상한 안의 이미지, max_pixels 0, 줄이지 못한 이미지는 파일을 그대로 돌려준다. 캐시 키는 원본 파일로 정하므로
+    여기서 무엇을 보내든 캐시는 그대로 맞는다."""
+    max_pixels = IMAGE_MAX_PIXELS if max_pixels is None else max_pixels
+    original = (mimetypes.guess_type(path.name)[0] or "image/png", path.read_bytes())
+    if max_pixels <= 0:
+        return original
+    try:
+        with Image.open(io.BytesIO(original[1])) as im:
+            if im.width * im.height <= max_pixels:
+                return original
+            im = ImageOps.exif_transpose(im)  # 사진의 회전 정보는 다시 저장하면 사라지므로 픽셀에 먼저 적용한다
+            if im.mode not in ("RGB", "RGBA"):
+                im = im.convert("RGBA" if "A" in im.mode or "transparency" in im.info else "RGB")
+            scale = (max_pixels / (im.width * im.height)) ** 0.5
+            size = (max(1, int(im.width * scale)), max(1, int(im.height * scale)))  # 내림: 상한을 넘지 않게
+            out = io.BytesIO()
+            im.resize(size, Image.Resampling.LANCZOS).save(out, "PNG")
+            return "image/png", out.getvalue()
+    except Exception:  # 깨진 파일, 모르는 형식, 지나치게 큰 이미지: 원본을 보내고 판단은 LLM 서버에 맡긴다
+        return original
+
+
 class LLMClient:
     """OpenAI 호환 /v1/chat/completions 클라이언트. 호출 횟수를 세고 상한을 넘기지 않는다."""
 
@@ -142,8 +180,8 @@ class LLMClient:
             content = []
             for p in parts:
                 if isinstance(p, Path):
-                    mime = mimetypes.guess_type(p.name)[0] or "image/png"
-                    b64 = base64.b64encode(p.read_bytes()).decode("ascii")
+                    mime, data = image_payload(p)
+                    b64 = base64.b64encode(data).decode("ascii")
                     content.append({"type": "image_url", "image_url": {"url": f"data:{mime};base64,{b64}"}})
                 else:
                     content.append({"type": "text", "text": p})

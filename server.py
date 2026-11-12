@@ -13,6 +13,7 @@ API
 환경 변수 (모두 선택)
   H3_BASE_URL  H3_MODEL  H3_API_KEY   LLM 서버 (CLI와 같다. 기본 http://127.0.0.1:8080/v1, gemma4)
   H3_CACHE_DIR          이미지 읽기 캐시 폴더 (기본 .cache/look)
+  H3_IMAGE_MAX_PIXELS   LLM에 보내는 이미지의 화소 수 상한 (기본 1048576. 넘는 이미지만 줄여 보낸다. 0 = 제한 없음. 코어가 읽는다)
   H3_HOST  H3_PORT      `uv run server.py`로 띄울 때의 주소 (기본 127.0.0.1:8000)
   H3_CONCURRENCY        동시에 돌릴 생성 수 (기본 1. 로컬 LLM 하나를 나눠 쓰므로 나머지는 줄을 선다)
   H3_MAX_WAITING        줄을 설 수 있는 요청 수 (기본 8. 넘으면 503)

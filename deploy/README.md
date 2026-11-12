@@ -40,7 +40,7 @@ docker compose -f deploy/compose.yml up -d --build
 
 ## 그 밖의 설정
 
-[.env.example](.env.example)에 설명과 함께 있습니다: 포트(`H3_PORT`), 동시에 돌릴 생성 수(`H3_CONCURRENCY`), 줄을 설 수 있는 요청 수(`H3_MAX_WAITING`), 이미지 크기 한도(`H3_MAX_UPLOAD_MB`).
+[.env.example](.env.example)에 설명과 함께 있습니다: 포트(`H3_PORT`), 동시에 돌릴 생성 수(`H3_CONCURRENCY`), 줄을 설 수 있는 요청 수(`H3_MAX_WAITING`), 이미지 크기 한도(`H3_MAX_UPLOAD_MB`), LLM에 보내는 이미지의 화소 수 상한(`H3_IMAGE_MAX_PIXELS`).
 
 - 이미지 읽기 캐시는 볼륨 `cache`에 남습니다.
 - 컨테이너는 루트가 아닌 계정으로 실행됩니다.

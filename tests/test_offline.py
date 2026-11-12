@@ -1,6 +1,6 @@
 # /// script
 # requires-python = ">=3.10"
-# dependencies = []
+# dependencies = ["pillow>=12.3.0"]
 # ///
 """LLM 없이 도는 검사: 코드가 맡은 부분(시각 계산, 토큰 치환, 형식 보정, 검사)만 확인한다.
 
@@ -109,6 +109,7 @@ def main() -> None:
     assert "cut time" in msgs and "language tag" in msgs, msgs
 
     test_helpers()
+    test_image_payload()
     test_i2v()
     test_ref()
     test_ref_first_frame()
@@ -202,6 +203,49 @@ def test_helpers() -> None:
     assert h.style_choice(o)[0] == "2D-animated, Japanese anime style", "화풍 기본값은 anime"
     assert h.style_choice(opts(style="live"))[0] == "Live-action, cinematic"
     assert h.style_choice(o, frame={"style": "watercolor, soft edges"})[0] == "watercolor, soft edges", "이미지가 있으면 이미지의 화풍"
+
+
+def test_image_payload() -> None:
+    """LLM에 보낼 이미지: 화소 수 상한을 넘으면 비율을 지켜 줄여 PNG로, 상한 안·0·못 여는 파일은 원본 그대로."""
+    import io
+    import tempfile
+
+    from PIL import Image
+
+    limit = h.DEFAULT_IMAGE_MAX_PIXELS
+
+    def sent(path: Path, max_pixels: int = limit):
+        mime, data = h.image_payload(path, max_pixels)
+        with Image.open(io.BytesIO(data)) as im:
+            return mime, im.size, im.mode
+
+    def fits(size, ratio: float) -> bool:   # 상한을 넘지 않고, 상한에 가깝고, 비율이 그대로인가
+        w, h_ = size
+        return 0.99 * limit < w * h_ <= limit and abs(w / h_ - ratio) < 0.005
+
+    with tempfile.TemporaryDirectory() as d:
+        for size in ((1344, 768), (832, 1216), (1024, 1024)):   # 읽기 정확도를 확인한 크기는 손대지 않는다
+            ok = Path(d) / f"ok{size[0]}.png"
+            Image.new("RGB", size, (200, 80, 40)).save(ok)
+            assert h.image_payload(ok, limit) == ("image/png", ok.read_bytes()), size
+        wide = Path(d) / "wide.jpg"
+        Image.new("RGB", (2688, 1536), (200, 80, 40)).save(wide, "JPEG")
+        mime, size, mode = sent(wide)
+        assert (mime, mode) == ("image/png", "RGB") and fits(size, 2688 / 1536), size
+        tall = Path(d) / "tall.png"
+        Image.new("RGBA", (1664, 2432), (0, 0, 0, 0)).save(tall)
+        mime, size, mode = sent(tall)
+        assert mode == "RGBA" and fits(size, 1664 / 2432), (size, mode)
+        turned = Path(d) / "turned.jpg"   # 옆으로 누운 사진: 회전 정보(Orientation 6)를 적용한 뒤에 줄인다
+        exif = Image.Exif()
+        exif[0x0112] = 6
+        Image.new("RGB", (2688, 1536)).save(turned, "JPEG", exif=exif)
+        assert fits(sent(turned)[1], 1536 / 2688), sent(turned)
+        assert sent(wide, 250_000)[1] == (661, 377), "상한을 낮추면 그만큼 줄인다"
+        assert h.image_payload(wide, 0) == ("image/jpeg", wide.read_bytes()), "0이면 제한 없이 원본 그대로"
+        broken = Path(d) / "broken.png"
+        broken.write_bytes(b"\x89PNG\r\n\x1a\n not an image")
+        assert h.image_payload(broken, limit) == ("image/png", broken.read_bytes()), "못 여는 파일은 원본 그대로"
 
 
 FRAME = {"style": "2D-animated, Japanese anime style, clean line art", "framing": "wide shot from the side",
